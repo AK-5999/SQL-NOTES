@@ -26,8 +26,8 @@ CREATE TABLE projects (
 
 ALTER TABLE employees
 ADD phone_number VARCHAR(15);
-ALTER TABLE employees
-DROP COLUMN email;
+--ALTER TABLE employees
+--DROP COLUMN email;
 ALTER TABLE employees
 ADD email VARCHAR(100);
 ALTER TABLE employees
