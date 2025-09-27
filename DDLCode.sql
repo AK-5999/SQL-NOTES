@@ -56,7 +56,7 @@ INSERT INTO employees (emp_id, emp_name, salary, dept_id, phone_number, hire_dat
 (106, 'Pooja Mehta', 48000, 6, '9876543215', '2024-10-12', 'Active', 'pooja.mehta@company.com'),
 (107, 'Suresh Reddy', 72000, 7, '9876543216', '2025-04-01', 'Active', 'suresh.reddy@company.com'),
 (108, 'Anjali Kapoor', 53000, 8, '9876543217', '2025-01-30', 'Active', 'anjali.kapoor@company.com'),
-(109, 'Deepak Jain', 56000, 9, '9876543218', '2024-09-20', 'Active', 'deepak.jain@company.com');
+(109, 'Deepak Jain', 56000, 9, '9876543218', '2024-09-20', 'Active', 'deepak.jain@company.com'),
 (110, 'Kavita Singh', 61000, 1, '9876543219', '2025-03-12', 'Active', 'kavita.singh@company.com'),
 (111, 'Manish Sharma', 58000, 2, '9876543220', '2025-02-15', 'Active', 'manish.sharma@company.com'),
 (112, 'Sunita Reddy', 72000, 3, '9876543221', '2025-01-20', 'Active', 'sunita.reddy@company.com'),
@@ -89,6 +89,7 @@ INSERT INTO employees (emp_id, emp_name, salary, dept_id, phone_number, hire_dat
 (139, 'Tina Mathew', 82000, 3, '9876543248', '2025-04-12', 'Active', 'tina.mathew@company.com');
 
 INSERT INTO projects (proj_id, proj_name, dept_id) VALUES
+INSERT INTO projects (proj_id, proj_name, dept_id) VALUES
 (201, 'Employee Onboarding', 1),
 (202, 'Payroll Automation', 2),
 (203, 'Website Revamp', 3),
@@ -98,4 +99,14 @@ INSERT INTO projects (proj_id, proj_name, dept_id) VALUES
 (207, 'New Product R&D', 7),
 (208, 'Legal Compliance Audit', 8),
 (209, 'Market Expansion Study', 9),
-(210, 'Internal Knowledge Portal', 3);
+(210, 'Internal Knowledge Portal', 3),
+(211, 'Annual Performance Review', 1),
+(212, 'Q3 Budget Forecasting', 2),
+(213, 'Cloud Migration Strategy', 3),
+(214, 'Influencer Marketing Pilot', 4),
+(215, 'Key Account Management', 5),
+(216, 'Help Desk System Upgrade', 6),
+(217, 'AI Research Initiative', 7),
+(218, 'Data Privacy Implementation', 8),
+(219, 'Supplier Quality Assurance', 9),
+(220, 'Mobile App Development', 3);
