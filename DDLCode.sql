@@ -89,7 +89,6 @@ INSERT INTO employees (emp_id, emp_name, salary, dept_id, phone_number, hire_dat
 (139, 'Tina Mathew', 82000, 3, '9876543248', '2025-04-12', 'Active', 'tina.mathew@company.com');
 
 INSERT INTO projects (proj_id, proj_name, dept_id) VALUES
-INSERT INTO projects (proj_id, proj_name, dept_id) VALUES
 (201, 'Employee Onboarding', 1),
 (202, 'Payroll Automation', 2),
 (203, 'Website Revamp', 3),
