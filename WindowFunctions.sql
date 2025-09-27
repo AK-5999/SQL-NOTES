@@ -1,50 +1,173 @@
-/*
-Assign a unique row number to each employee based on hire_date.
+--Assign a unique row number to each employee based on hire_date.
 
-Show the top 3 highest-paid employees using ROW_NUMBER().
+SELECT *,
+row_number() OVER(partition by dept_id ORDER BY emp_id) as rn
+FROM Employees;
 
-Find the most recent hire in each department.
+--Show the top 3 highest-paid employees using ROW_NUMBER().
+SELECT emp_name, salary FROM (
+SELECT *,
+row_number() OVER(ORDER BY salary DESC) as rn
+  FROM Employees
+)
+WHERE rn<4;
 
-Return employees who are 5th hired in the company overall.
+--Find the most recent hire in each department.
+SELECT emp_name, dept_id,hire_date FROM(
+	SELECT *,
+	row_number() OVER(partition by dept_id ORDER BY hire_date DESC) as rn
+  FROM Employees
+) WHERE rn=1;
 
-List employees with even row numbers when ordered by salary.
-*/
+--Return employees who are 5th hired in the company overall.
+SELECT emp_name, dept_id,hire_date,rn FROM(
+	SELECT *,
+	row_number() OVER(ORDER BY hire_date DESC) as rn
+  FROM Employees
+) WHERE rn=5;
 
-/*
-Rank employees based on salary (highest = rank 1).
+--List employees with even row numbers when ordered by salary.
+SELECT * FROM(
+	SELECT *,
+	row_number() OVER(ORDER BY salary DESC) as rn
+  FROM Employees
+) WHERE rn%2=0;
 
-Find employees with rank 2 salary in each department.
+--Rank employees based on salary (highest = rank 1).
 
-List employees who share the same salary and their ranks.
+SELECT *,
+rank() OVER(ORDER BY Salary DESC) as rank
+FROM Employees;
 
-Rank employees by hire_date within departments.
+--Find employees with rank 2 salary in each department.
+SELECT * FROM(
+SELECT *,
+rank() OVER(partition by dept_id ORDER BY salary DESC) as rank
+FROM Employees
+)
+WHERE rank=2
 
-Find departments where more than one employee has rank 1 salary.
-*/
+--List employees who share the same salary and their ranks.
+SELECT * FROM(
+SELECT *, 
+lead(salary) OVER(ORDER BY salary DESC) as next_salary
+FROM(
+SELECT *,
+lag(salary,1,0) OVER(ORDER BY salary DESC) as previous_salary
+  FROM (
+    SELECT *,
+    rank() OVER(ORDER BY Salary DESC) as rank
+	FROM Employees
+  )
+))
+WHERE salary = previous_salary or salary = next_salary
 
-/*
-Assign dense ranks to employees by salary.
 
-Compare RANK() vs DENSE_RANK() for employees with duplicate salaries.
 
-Find employees with dense rank = 3 in each department.
+--Rank employees by hire_date within departments.
+SELECT *,
+rank() OVER(partition by dept_id ORDER BY hire_date DESC) as rank
+FROM Employees
 
-List departments where the top 2 salaries are close but tied.
+--Find departments where more than one employee has rank 1 salary.
+SELECT dept_id,COUNT(emp_id) FROM(
+SELECT * FROM(
+SELECT *,
+rank() OVER(partition by dept_id ORDER BY salary DESC) as rank
+  FROM Employees
+) WHERE rank=1
+) GROUP BY dept_id
+HAVING COUNT(emp_id)>1
 
-Show employees who fall in the top 5 dense salary ranks.
-*/
+--Assign dense ranks to employees by salary.
 
-/*
-Divide employees into 4 salary quartiles.
+SELECT *,
+dense_rank() OVER(ORDER BY salary DESC) as dense_rank
+FROM Employees;
 
-Group employees into 2 halves by hire_date.
+--Compare RANK() vs DENSE_RANK() for employees with duplicate salaries.
+SELECT emp_name, rank, dense_rank FROM(
+SELECT *,
+dense_rank() OVER(ORDER BY salary DESC) as dense_rank,
+rank() OVER(ORDER BY salary DESC) as rank
+  FROM Employees
+)
+WHERE salary IN (
+SELECT salary FROM(
+SELECT *,
+dense_rank() OVER(ORDER BY salary DESC) as dense_rank,
+rank() OVER(ORDER BY salary DESC) as rank
+  FROM Employees
+) GROUP BY salary
+HAVING COUNT(rank)>1);
 
-Assign employees into deciles (10 groups) by salary.
+--Find employees with dense rank = 3 in each department.
+SELECT * FROM(
+SELECT *,
+dense_rank() OVER(partition by dept_id ORDER BY salary DESC) as dense_rank
+  FROM Employees
+) WHERE dense_rank=3;
 
-Check which salary group (bucket) each employee belongs to.
 
-Find employees in the lowest salary quartile.
-*/
+--Show employees who fall in the top 5 dense salary ranks.
+
+SELECT * FROM(
+SELECT *,
+dense_rank() OVER(partition by dept_id ORDER BY salary DESC) as dense_rank
+  FROM Employees
+) WHERE dense_rank<6;
+
+
+--Divide employees into 4 salary quartiles.
+
+SELECT
+    emp_name,
+    salary,
+    NTILE(4) OVER (ORDER BY salary ASC) AS SalaryQuartile
+FROM
+    Employees
+ORDER BY
+SalaryQuartile, salary;
+
+--Group employees into 2 halves by hire_date.
+SELECT
+    *,
+    NTILE(2) OVER (ORDER BY hire_date ASC) AS hire_date_halves
+FROM
+    Employees
+ORDER BY
+hire_date_halves, salary;
+
+--Assign employees into deciles (10 groups) by salary.
+SELECT
+    *,
+    NTILE(10) OVER (ORDER BY salary ASC) AS SalaryGroups
+FROM
+    Employees
+ORDER BY
+    SalaryGroups, salary;
+
+
+
+--Find employees in the lowest salary quartile.
+SELECT
+    *,
+    NTILE(10) OVER (ORDER BY salary ASC) AS SalaryGroups
+FROM
+    Employees
+ORDER BY
+SalaryGroups, salary
+LIMIT 1;
+
+-- Highest Paid employee
+-- 2ND highest paid employee
+-- Lowest paid employee
+SELECT *,
+	FIRST_VALUE(emp_name) OVER(ORDER BY salary DESC) AS HighestPaidEmployee,
+  NTH_VALUE(emp_name,2) OVER (ORDER BY salary DESC) AS SecondPaidEmployee,
+	LAST_VALUE(emp_name) OVER (ORDER BY salary DESC ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING)  AS LowestPaidEmployee
+FROM
+    Employees;
 
 /*
 Find the running total salary of employees ordered by hire_date.
