@@ -244,3 +244,50 @@ ADD COLUMN bonus INT;
 
 -- 50. Truncate the projects table
 TRUNCATE TABLE employees;
+
+--Find the 2nd highest salary among employees.
+
+SELECT salary FROM Employees
+WHERE NOT(salary = (SELECT MAX(salary) FROM Employees))
+ORDER BY salary DESC LIMIT 1;
+
+--List employees who earn more than the average salary of their department.
+SELECT emp_name,salary,DepartmentAvergaeSalary
+FROM Employees
+JOIN (
+	SELECT AVG(salary) AS DepartmentAvergaeSalary,dept_id
+	FROM Employees
+  GROUP BY dept_id
+) c ON Employees.dept_id = c.dept_id
+WHERE salary > DepartmentAvergaeSalary
+
+
+--Get the department name with the highest average salary.
+SELECT dept_name FROM Departments
+WHERE dept_id = (
+SELECT dept_id
+FROM Employees
+GROUP BY dept_id
+  ORDER BY AVG(salary) DESC LIMIT 1
+)
+
+
+
+--List each department with the highest-paid employee in that department.
+SELECT * FROM Departments
+JOIN (
+SELECT MAX(salary) AS HighestSalary,dept_id,emp_name FROM Employees
+GROUP BY dept_id
+) h ON Departments.dept_id = h.dept_id
+
+--Find employees who are not assigned to any project (based on dept_id).
+SELECT
+    e.emp_name,
+    e.dept_id
+FROM
+    Employees e
+WHERE
+    e.dept_id NOT IN (
+        SELECT DISTINCT dept_id
+        FROM projects
+    );
